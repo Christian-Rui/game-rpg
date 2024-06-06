@@ -26,12 +26,23 @@ window.OverworldMaps = {
             hero: new Person({
                 isPlayerControlled: true,
                 x: utils.withGrid(5),
-                y: utils.withGrid(6)
+                y: utils.withGrid(6),
+                src: "/images/characters/people/img.png",
+                numeroDeFrames: 8,
+                width: 24,
+                colunaY: {
+                    "down": 0,
+                    "up": 1,
+                    "left": 2,
+                    "right": 3
+                },
+                distanciaX: 4,
+                animationFrameLimit: 4
             }),  
             hero2: new Person({
                 x: utils.withGrid(6),
                 y: utils.withGrid(4),
-                src: "/images/characters/people/npc1.png"
+                src: "/images/characters/people/npc1.png",
              })
         }
     }, 

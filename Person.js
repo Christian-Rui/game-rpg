@@ -17,14 +17,16 @@ class Person extends GameObject {
     }
 
     update(state){
+        
         this.updatePosition();
+        
         if(this.isPlayerControlled && this.movingProgressRemaining === 0 && state.arrow) {
             this.direction = state.arrow;
+            
             this.movingProgressRemaining = Math.round(16 / this.speed);
             this.total = 0;
         }
-
-        
+        this.updateSprite(state);
     }
 
     updatePosition() {
@@ -34,11 +36,23 @@ class Person extends GameObject {
             if(this.movingProgressRemaining != 1) {           
             this[property] += change * this.speed;  
             }                 
-            else if (this.movingProgressRemaining === 1 && this.total != 16) {
-                this[property] += change * (this.speed + (16 - this.total));
+            else if (this.movingProgressRemaining === 1) {
+                this[property] += change * (this.speed != 16 ? (this.speed + (16 - this.total)) : this.speed);
             }
-
             this.movingProgressRemaining -= 1;
         }
     }
+    updateSprite(state) {
+        
+        if(this.isPlayerControlled && this.movingProgressRemaining === 0 && !state.arrow){
+            this.sprite.setAnimation("idle-"+this.direction);
+            return;
+        }
+
+        if(this.movingProgressRemaining > 0) {
+            this.sprite.setAnimation("walk-"+this.direction);       
+        }
+        
+    }
+
 }
