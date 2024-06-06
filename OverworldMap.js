@@ -20,9 +20,14 @@ class OverworldMap {
 
 window.OverworldMaps = {
     DemoRoom: {
-        lowerSrc: "/images/maps/DemoLower.png",
-        upperSrc: "/images/maps/DemoUpper.png",
+        lowerSrc: "/images/maps/corredor.png",
+        upperSrc: "/images/maps/corredorCima.png",
         gameObjects: {
+            hero2: new Person({
+                x: utils.withGrid(6),
+                y: utils.withGrid(4),
+                src: "/images/characters/people/npc1.png",
+             }),
             hero: new Person({
                 isPlayerControlled: true,
                 x: utils.withGrid(5),
@@ -38,12 +43,8 @@ window.OverworldMaps = {
                 },
                 distanciaX: 4,
                 animationFrameLimit: 4
-            }),  
-            hero2: new Person({
-                x: utils.withGrid(6),
-                y: utils.withGrid(4),
-                src: "/images/characters/people/npc1.png",
-             })
+            }) 
+            
         }
     }, 
     Kitchen: {
