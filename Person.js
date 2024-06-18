@@ -1,7 +1,7 @@
 class Person extends GameObject {
     constructor(config) {
         super(config);
-        this.movingProgressRemaining= 0;
+        this.movingProgressRemaining = 0;
 
         this.isPlayerControlled = config.isPlayerControlled || false;
 
@@ -16,43 +16,57 @@ class Person extends GameObject {
         }
     }
 
-    update(state){
-        
-        this.updatePosition();
-        
-        if(this.isPlayerControlled && this.movingProgressRemaining === 0 && state.arrow) {
-            this.direction = state.arrow;
-            
+    update(state) {
+        if (this.movingProgressRemaining > 0) {
+            this.updatePosition();
+        } else {
+            if (this.isPlayerControlled && state.arrow) {
+                this.startBehavior(state, {
+                    type: "walk",
+                    direction: state.arrow
+                });
+            }
+            this.updateSprite(state);
+        }
+    }
+
+    startBehavior(state, behavior) {
+        this.direction = behavior.direction;
+        if (behavior.type === "walk") {
+            if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+                return;
+            }
+            state.map.moveWall(this.x, this.y, this.direction)
             this.movingProgressRemaining = Math.round(16 / this.speed);
             this.total = 0;
         }
-        this.updateSprite(state);
     }
 
     updatePosition() {
-        if(this.movingProgressRemaining > 0) {
+        if (this.movingProgressRemaining > 0) {
             const [property, change] = this.directionUpdate[this.direction];
             this.total += this.speed;
-            if(this.movingProgressRemaining != 1) {           
-            this[property] += change * this.speed;  
-            }                 
-            else if (this.movingProgressRemaining === 1) {
-                this[property] += change * (this.speed != 16 ? (this.speed + (16 - this.total)) : this.speed);
+            if (this.movingProgressRemaining !== 1) {
+                this[property] += change * this.speed;
+            } else if (this.movingProgressRemaining === 1) {
+                this[property] += change * (this.speed !== 16 ? (this.speed + (16 - this.total)) : this.speed);
             }
             this.movingProgressRemaining -= 1;
+
+            if (this.movingProgressRemaining === 0) {
+                this.intentPosition = null;
+                utils.emitEvent("PersonWalkingComplete", {
+                    whoId: this.id
+                });
+            }
         }
     }
+
     updateSprite(state) {
-        
-        if(this.isPlayerControlled && this.movingProgressRemaining === 0 && !state.arrow){
-            this.sprite.setAnimation("idle-"+this.direction);
+        if (this.movingProgressRemaining > 0) {
+            this.sprite.setAnimation("walk-" + this.direction);
             return;
         }
-
-        if(this.movingProgressRemaining > 0) {
-            this.sprite.setAnimation("walk-"+this.direction);       
-        }
-        
+        this.sprite.setAnimation("idle-" + this.direction);
     }
-
 }

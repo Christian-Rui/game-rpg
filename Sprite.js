@@ -10,7 +10,7 @@ class Sprite {
         this.shadow = new Image();
         this.useShadow = true; //config.useShadow || false
         if (this.useShadow) {
-            this.shadow.src = "/images/characters/shadow.png";
+            this.shadow.src = "./images/characters/shadow.png";
         }
 
         this.shadow.onload = () => {
@@ -20,7 +20,7 @@ class Sprite {
         this.numeroDeFrames = config.numeroDeFrames || 4;
         this.colunaY = config.colunaY;
         
-        console.log(this.colunaY)
+        // console.log(this.colunaY)
 
         // this.animations = config.animations || {
         //     "idle-down": [[0, this.colunaY ? this.colunaY.down : 0]],
@@ -42,12 +42,10 @@ class Sprite {
 
         // Criação das animações
         this.animations = config.animations || {};
-        ["down", "right", "up", "left"].forEach(direction => {
-            this.animations[`idle-${direction}`] = [[0, this.colunaY?.[direction] || defaultValue[direction]]];
-        });
 
         // Definição das animações de caminhada
         ["down", "right", "up", "left"].forEach(direction => {
+            this.animations[`idle-${direction}`] = [[0, this.colunaY?.[direction] || defaultValue[direction]]];
             this.animations[`walk-${direction}`] = this.defineFrames(this.numeroDeFrames, this.colunaY?.[direction] || defaultValue[direction]);
         });
 
@@ -99,9 +97,9 @@ class Sprite {
         }
     }
 
-    draw(ctx) {
-        const x = this.gameObject.x;
-        const y = this.gameObject.y;
+    draw(ctx, cameraPerson) {
+        const x = this.gameObject.x + utils.withGrid(10,5) - cameraPerson.x;
+        const y = this.gameObject.y + utils.withGrid(6) - cameraPerson.y;
 
         this.isShadowLoaded && ctx.drawImage(this.shadow, x - 8, y - 18);
 
